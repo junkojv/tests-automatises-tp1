@@ -82,11 +82,25 @@ def test_subtract_endpoint(client):
     assert response.get_json() == {"result": 3.0}
 
 
+def test_subtract_invalid_number_endpoint(client):
+    response = client.get("/api/subtract/a/2")
+
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Les paramètres doivent être des nombres"}
+
+
 def test_multiply_endpoint(client):
     response = client.get("/api/multiply/4/3")
 
     assert response.status_code == 200
     assert response.get_json() == {"result": 12.0}
+
+
+def test_multiply_invalid_number_endpoint(client):
+    response = client.get("/api/multiply/a/2")
+
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Les paramètres doivent être des nombres"}
 
 
 def test_add_user_endpoint(client):
