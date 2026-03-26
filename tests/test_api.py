@@ -19,6 +19,13 @@ def client(app):
     return app.test_client()
 
 
+def test_create_app_default_config():
+    app = create_app()
+
+    assert app.config["SECRET_KEY"] == "dev"
+    assert app.config["DATABASE"] == "app.db"
+
+
 def test_index_route(client):
     response = client.get("/")
 
@@ -47,11 +54,39 @@ def test_divide_by_zero_endpoint(client):
     assert response.get_json() == {"error": "Division par zéro impossible"}
 
 
+def test_divide_endpoint(client):
+    response = client.get("/api/divide/10/2")
+
+    assert response.status_code == 200
+    assert response.get_json() == {"result": 5.0}
+
+
 def test_invalid_number_endpoint(client):
     response = client.get("/api/add/a/3")
 
     assert response.status_code == 400
     assert response.get_json() == {"error": "Les paramètres doivent être des nombres"}
+
+
+def test_divide_invalid_number_endpoint(client):
+    response = client.get("/api/divide/a/2")
+
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Les paramètres doivent être des nombres"}
+
+
+def test_subtract_endpoint(client):
+    response = client.get("/api/subtract/5/2")
+
+    assert response.status_code == 200
+    assert response.get_json() == {"result": 3.0}
+
+
+def test_multiply_endpoint(client):
+    response = client.get("/api/multiply/4/3")
+
+    assert response.status_code == 200
+    assert response.get_json() == {"result": 12.0}
 
 
 def test_add_user_endpoint(client):
